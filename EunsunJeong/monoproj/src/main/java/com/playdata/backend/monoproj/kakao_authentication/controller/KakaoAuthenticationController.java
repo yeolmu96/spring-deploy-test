@@ -1,5 +1,6 @@
 package com.playdata.backend.monoproj.kakao_authentication.controller;
 
+import com.playdata.backend.monoproj.kakao_authentication.controller.response.KakaoUserInfoResponse;
 import com.playdata.backend.monoproj.kakao_authentication.service.KakaoAuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,11 @@ public class KakaoAuthenticationController {
 
     @GetMapping("login")
     @Transactional
-    public String requestLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public KakaoUserInfoResponse requestLogin(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         log.info("requestAccessToken(): code {}", code);
 
-        return kakaoAuthenticationService.handleLogin(code);
+        KakaoUserInfoResponse response = kakaoAuthenticationService.handleLogin(code);
+        return KakaoUserInfoResponse.from(response);
     }
 }
 
