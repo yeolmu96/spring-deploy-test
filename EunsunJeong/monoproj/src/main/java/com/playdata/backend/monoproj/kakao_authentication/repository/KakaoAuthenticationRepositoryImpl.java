@@ -13,42 +13,57 @@ import java.util.Map;
 
 @Repository
 public class KakaoAuthenticationRepositoryImpl implements KakaoAuthenticationRepository {
-
     private final String clientId;
     private final String redirectUri;
-    //client가 되어 요청하기 위해 필요함
-    private final RestTemplate restTemplate;
     private final String tokenRequestUri;
+    private final String userInfoRequestUri;
+
+    // RestTemplate <- Client가 되서 요청하기 위해 필요
+    private final RestTemplate restTemplate;
 
     public KakaoAuthenticationRepositoryImpl(
             @Value("${kakao.client-id}") String clientId,
             @Value("${kakao.redirect-uri}") String redirectUri,
             @Value("${kakao.token-request-uri}") String tokenRequestUri,
+            @Value("${kakao.user-info-request-uri}") String userInfoRequestUri,
             RestTemplate restTemplate) {
 
-        //yaml파일의 설정값이 들어감
         this.clientId = clientId;
         this.redirectUri = redirectUri;
         this.tokenRequestUri = tokenRequestUri;
+        this.userInfoRequestUri = userInfoRequestUri;
+
         this.restTemplate = restTemplate;
     }
 
     @Override
     public Map<String, Object> getAccessToken(String code) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", clientId);
-        params.add("redirect_uri", redirectUri);
-        params.add("code", code);
-        params.add("client_secret", "");
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grant_type", "authorization_code");
+        formData.add("client_id", clientId);
+        formData.add("redirect_uri", redirectUri);
+        formData.add("code", code);
+        formData.add("client_secret", "");
 
         HttpHeaders headers = new HttpHeaders();
 
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
-        ResponseEntity<Map> response = restTemplate.exchange(tokenRequestUri, HttpMethod.POST, requestEntity, Map.class);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(formData, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(
+                tokenRequestUri, HttpMethod.POST, requestEntity, Map.class);
 
         return response.getBody();
     }
 
+    @Override
+    public Map<String, Object> getUserInfo(String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                userInfoRequestUri, HttpMethod.GET, requestEntity, Map.class);
+
+        return response.getBody();
+    }
 }

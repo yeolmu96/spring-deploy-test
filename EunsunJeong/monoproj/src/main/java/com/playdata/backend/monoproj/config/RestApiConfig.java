@@ -11,5 +11,4 @@ public class RestApiConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }
