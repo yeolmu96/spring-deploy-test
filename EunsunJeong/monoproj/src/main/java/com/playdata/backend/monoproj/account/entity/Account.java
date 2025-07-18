@@ -1,24 +1,24 @@
 package com.playdata.backend.monoproj.account.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@ToString
+@Getter
+@NoArgsConstructor
 public class Account {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String email;
     String nickname;
 
-    public Account(){
-
-    }
-
-    public Account(Long id, String email, String nickname) {
-        this.id = id;
+    public Account(String email, String nickname) {
         this.email = email;
         this.nickname = nickname;
     }

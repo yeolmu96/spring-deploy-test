@@ -1,14 +1,12 @@
 package com.playdata.backend.monoproj.account.controller;
 
-import com.playdata.backend.monoproj.account.controller.request.RegisterAccountRequest;
-import com.playdata.backend.monoproj.account.controller.response_form.RegisterAccountResponse;
+import com.playdata.backend.monoproj.account.controller.request_form.RegisterAccountRequestForm;
+import com.playdata.backend.monoproj.account.controller.response_form.RegisterAccountResponseForm;
 import com.playdata.backend.monoproj.account.service.AccountService;
 import com.playdata.backend.monoproj.redis_cache.RedisCacheService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -22,11 +20,16 @@ public class AccountController {
     private final RedisCacheService redisCacheService;
 
     @PostMapping("/register")
-    public RegisterAccountResponse createAccount(){
+    public RegisterAccountResponseForm createAccount(
+            @RequestHeader("Authorization") String authorization,
+            @RequestBody RegisterAccountRequestForm requestForm
+    ){
+
+        log.info();
 
         //회원가입 진행
-        RegisterAccountRequest request = requestForm.toRegisterAccountReqeust();
-        RegisterAccountResponse response = accountService.register(request);
+        RegisterAccountRequestForm request = requestForm.toRegisterAccountReqeust();
+        RegisterAccountResponseForm response = accountService.register(request);
         Long accountId = response.getAccountId();
 
         //진짜 토큰 발급
@@ -37,6 +40,6 @@ public class AccountController {
         //임시 토큰 삭제
         redisCacheService.deleteKey(temporaryUserToken);
 
-        return RegisterAccountResponse.from(response);
+        return RegisterAccountResponseForm.from(response);
     }
 }
