@@ -9,16 +9,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RegisterAccountResponseForm {
 
-    final private Long accountId;
+    final private String userToken;
     final private String email;
     final private String nickname;
 
-    pubilc static RegisterAccountRequestForm from(
-            final RegisterAccountResponse response
+    public static RegisterAccountRequestForm from(
+            final RegisterAccountResponse response,
+            final String userToken
             ){
 
-        return new RegisterAccountRequestForm(
-                response.getAccountId(),
+        return new RegisterAccountResponseForm(
+                userToken,
                 response.getEmail(),
                 response.getNickname()
         );
