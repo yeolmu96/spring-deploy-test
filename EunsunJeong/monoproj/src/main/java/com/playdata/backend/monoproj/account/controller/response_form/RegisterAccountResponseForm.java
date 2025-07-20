@@ -13,7 +13,7 @@ public class RegisterAccountResponseForm {
     final private String email;
     final private String nickname;
 
-    public static RegisterAccountRequestForm from(
+    public static RegisterAccountResponseForm from(
             final RegisterAccountResponse response,
             final String userToken
             ){
