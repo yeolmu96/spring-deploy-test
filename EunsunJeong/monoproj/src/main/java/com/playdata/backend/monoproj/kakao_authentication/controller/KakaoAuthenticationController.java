@@ -1,8 +1,8 @@
 package com.playdata.backend.monoproj.kakao_authentication.controller;
 
 import com.playdata.backend.monoproj.kakao_authentication.controller.response_form.KakaoLoginResponseForm;
+import com.playdata.backend.monoproj.kakao_authentication.controller.response_form.KakaoUserInfoResponseForm;
 import com.playdata.backend.monoproj.kakao_authentication.service.KakaoAuthenticationService;
-import com.playdata.backend.monoproj.kakao_authentication.service.response.KaKaoUserInfoResponse;
 import com.playdata.backend.monoproj.kakao_authentication.service.response.KakaoUserInfoResponse;
 import com.playdata.backend.monoproj.redis_cache.RedisCacheService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ public class KakaoAuthenticationController {
     final private RedisCacheService redisCacheService;
 
     @GetMapping("/login")
-    public KakaoLoginResponseForm requestLogin(@RequestParam("code") String code) throws IOException {
+    public KakaoUserInfoResponseForm requestLogin(@RequestParam("code") String code) throws IOException {
 
         log.info("requestLogin(): code {}", code);
 
@@ -35,7 +35,9 @@ public class KakaoAuthenticationController {
         String accessToken = response.getAccessToken();
         String temporaryUserToken = createTemporaryUserToken(accessToken);
 
-        return KakaoLoginResponseForm.from(response, temporaryUserToken);
+        //기존인지 신규인지 확인
+
+        return KakaoUserInfoResponseForm.from(response);
     }
 
     private String createTemporaryUserToken(String accessToken) {
