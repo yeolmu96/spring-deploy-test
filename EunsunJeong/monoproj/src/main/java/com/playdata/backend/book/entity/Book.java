@@ -22,11 +22,11 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
-    private Account accountId;
+    private Account account;
 
-    public Book(String title, String content, Account accountId) {
+    public Book(String title, String content, Account account) {
         this.title = title;
         this.content = content;
-        this.accountId = accountId;
+        this.account = account;
     }
 }

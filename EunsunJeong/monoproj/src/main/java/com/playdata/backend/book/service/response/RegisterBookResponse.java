@@ -7,15 +7,16 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class RegisterBookResponse {
-    private final String title;
-    private final String content;
-    private final Long accountId;
+    final private Long bookId;
+    final private String title;
+    final private String content;
+    final private String registeredAccountNickname;
 
-    public static RegisterBookResponse from(Book book) {
+    public static RegisterBookResponse from(final Book book) {
         return new RegisterBookResponse(
+                book.getId(),
                 book.getTitle(),
                 book.getContent(),
-                book.getAccountId().getId()
-        );
+                book.getAccount().getNickname());
     }
 }
